@@ -3,10 +3,10 @@ package com.music.streaming.catalog.application.command;
 import com.music.streaming.catalog.application.port.SongRepository;
 import com.music.streaming.catalog.domain.InvalidSongException;
 import com.music.streaming.catalog.domain.Song;
+import com.music.streaming.catalog.domain.SongDomainService;
 import com.music.streaming.catalog.domain.SongNotFoundException;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
-import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
@@ -14,6 +14,8 @@ import java.util.UUID;
 public class UpdateSongCommand {
     @NonNull
     final SongRepository songRepository;
+    @NonNull
+    final SongDomainService songDomainService;
     @NonNull
     final String id;
     final String title;
@@ -23,8 +25,7 @@ public class UpdateSongCommand {
     final String genreId;
 
     public void handle() throws SongNotFoundException, InvalidSongException {
-        if (!StringUtils.hasText(title)) throw new InvalidSongException();
-        if (durationSeconds == null || durationSeconds <= 0) throw new InvalidSongException();
+        songDomainService.validate(title, durationSeconds);
         try {
             UUID.fromString(id);
         } catch (IllegalArgumentException e) {

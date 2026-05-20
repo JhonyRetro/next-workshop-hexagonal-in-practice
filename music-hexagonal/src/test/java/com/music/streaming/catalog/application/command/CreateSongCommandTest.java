@@ -4,6 +4,7 @@ import com.music.streaming.catalog.application.port.SongRepository;
 import com.music.streaming.catalog.domain.DuplicatedSongException;
 import com.music.streaming.catalog.domain.InvalidSongException;
 import com.music.streaming.catalog.domain.Song;
+import com.music.streaming.catalog.domain.SongDomainService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,12 +23,15 @@ class CreateSongCommandTest {
     @Mock
     SongRepository songRepository;
 
+    SongDomainService songDomainService = new SongDomainService();
+
     @Test
     void handle_shouldReturnIdWhenValid() throws InvalidSongException, DuplicatedSongException {
         when(songRepository.getSongByTitle("Bohemian Rhapsody")).thenReturn(Optional.empty());
 
         String id = CreateSongCommand.builder()
                 .songRepository(songRepository)
+                .songDomainService(songDomainService)
                 .title("Bohemian Rhapsody")
                 .durationSeconds(354)
                 .artistId("artist-1")
@@ -46,6 +50,7 @@ class CreateSongCommandTest {
 
         String id = CreateSongCommand.builder()
                 .songRepository(songRepository)
+                .songDomainService(songDomainService)
                 .title("Test Song")
                 .durationSeconds(200)
                 .build().handle();
@@ -59,6 +64,7 @@ class CreateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 CreateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .title("")
                         .durationSeconds(354)
                         .build().handle());
@@ -70,6 +76,7 @@ class CreateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 CreateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .title(null)
                         .durationSeconds(354)
                         .build().handle());
@@ -81,6 +88,7 @@ class CreateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 CreateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .title("Test Song")
                         .durationSeconds(0)
                         .build().handle());
@@ -92,6 +100,7 @@ class CreateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 CreateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .title("Test Song")
                         .durationSeconds(-10)
                         .build().handle());
@@ -103,6 +112,7 @@ class CreateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 CreateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .title("Test Song")
                         .durationSeconds(null)
                         .build().handle());
@@ -117,6 +127,7 @@ class CreateSongCommandTest {
         assertThrows(DuplicatedSongException.class, () ->
                 CreateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .title("Bohemian Rhapsody")
                         .durationSeconds(354)
                         .build().handle());

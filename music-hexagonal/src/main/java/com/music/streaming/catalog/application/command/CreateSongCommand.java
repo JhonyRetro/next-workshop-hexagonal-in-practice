@@ -4,9 +4,9 @@ import com.music.streaming.catalog.application.port.SongRepository;
 import com.music.streaming.catalog.domain.DuplicatedSongException;
 import com.music.streaming.catalog.domain.InvalidSongException;
 import com.music.streaming.catalog.domain.Song;
+import com.music.streaming.catalog.domain.SongDomainService;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
-import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
@@ -14,6 +14,8 @@ import java.util.UUID;
 public class CreateSongCommand {
     @NonNull
     final SongRepository songRepository;
+    @NonNull
+    final SongDomainService songDomainService;
     final String title;
     final Integer durationSeconds;
     final String artistId;
@@ -21,8 +23,7 @@ public class CreateSongCommand {
     final String genreId;
 
     public String handle() throws InvalidSongException, DuplicatedSongException {
-        if (!StringUtils.hasText(title)) throw new InvalidSongException();
-        if (durationSeconds == null || durationSeconds <= 0) throw new InvalidSongException();
+        songDomainService.validate(title, durationSeconds);
         if (songRepository.getSongByTitle(title).isPresent()) throw new DuplicatedSongException();
         Song song = Song.builder()
                 .id(UUID.randomUUID().toString())

@@ -9,6 +9,7 @@ import com.music.streaming.catalog.application.query.GetSongByIdQuery;
 import com.music.streaming.catalog.domain.DuplicatedSongException;
 import com.music.streaming.catalog.domain.InvalidSongException;
 import com.music.streaming.catalog.domain.Song;
+import com.music.streaming.catalog.domain.SongDomainService;
 import com.music.streaming.catalog.domain.SongNotFoundException;
 import com.music.streaming.catalog.infrastructure.rest.dto.request.PatchSongRequestDTO;
 import com.music.streaming.catalog.infrastructure.rest.dto.request.PostSongRequestDTO;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public class SongController {
     final SongFacadeMapper songFacadeMapper;
     final SongRepository songRepository;
+    final SongDomainService songDomainService;
 
     @GetMapping
     public ResponseEntity getAllSongs() {
@@ -43,6 +45,7 @@ public class SongController {
         try {
             String id = CreateSongCommand.builder()
                     .songRepository(songRepository)
+                    .songDomainService(songDomainService)
                     .title(songDto.getTitle())
                     .durationSeconds(songDto.getDurationSeconds())
                     .artistId(songDto.getArtistId())
@@ -68,6 +71,7 @@ public class SongController {
         try {
             UpdateSongCommand.builder()
                     .songRepository(songRepository)
+                    .songDomainService(songDomainService)
                     .id(id)
                     .title(songDto.getTitle())
                     .durationSeconds(songDto.getDurationSeconds())

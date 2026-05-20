@@ -3,6 +3,7 @@ package com.music.streaming.catalog.application.command;
 import com.music.streaming.catalog.application.port.SongRepository;
 import com.music.streaming.catalog.domain.InvalidSongException;
 import com.music.streaming.catalog.domain.Song;
+import com.music.streaming.catalog.domain.SongDomainService;
 import com.music.streaming.catalog.domain.SongNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,8 @@ class UpdateSongCommandTest {
     @Mock
     SongRepository songRepository;
 
+    SongDomainService songDomainService = new SongDomainService();
+
     @Test
     void handle_shouldSucceedWhenValid() {
         String id = UUID.randomUUID().toString();
@@ -32,6 +35,7 @@ class UpdateSongCommandTest {
         assertDoesNotThrow(() ->
                 UpdateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .id(id)
                         .title("New Title")
                         .durationSeconds(240)
@@ -47,6 +51,7 @@ class UpdateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 UpdateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .id(UUID.randomUUID().toString())
                         .title("")
                         .durationSeconds(240)
@@ -59,6 +64,7 @@ class UpdateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 UpdateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .id(UUID.randomUUID().toString())
                         .title("New Title")
                         .durationSeconds(0)
@@ -71,6 +77,7 @@ class UpdateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 UpdateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .id(UUID.randomUUID().toString())
                         .title("New Title")
                         .durationSeconds(-5)
@@ -83,6 +90,7 @@ class UpdateSongCommandTest {
         assertThrows(InvalidSongException.class, () ->
                 UpdateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .id("not-a-valid-uuid")
                         .title("New Title")
                         .durationSeconds(240)
@@ -97,6 +105,7 @@ class UpdateSongCommandTest {
         assertThrows(SongNotFoundException.class, () ->
                 UpdateSongCommand.builder()
                         .songRepository(songRepository)
+                        .songDomainService(songDomainService)
                         .id(id)
                         .title("New Title")
                         .durationSeconds(240)
