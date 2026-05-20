@@ -3,7 +3,7 @@ package com.music.streaming.catalog.infrastructure.rest;
 import com.music.streaming.catalog.application.command.CreateSongCommand;
 import com.music.streaming.catalog.application.command.DeleteSongCommand;
 import com.music.streaming.catalog.application.command.UpdateSongCommand;
-import com.music.streaming.catalog.application.port.SongRepositoryPort;
+import com.music.streaming.catalog.application.port.SongRepository;
 import com.music.streaming.catalog.application.query.GetAllSongsQuery;
 import com.music.streaming.catalog.application.query.GetSongByIdQuery;
 import com.music.streaming.catalog.domain.DuplicatedSongException;
@@ -28,11 +28,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SongController {
     final SongFacadeMapper songFacadeMapper;
-    final SongRepositoryPort songRepositoryPort;
+    final SongRepository songRepository;
 
     @GetMapping
     public ResponseEntity getAllSongs() {
-        List<Song> songs = GetAllSongsQuery.builder().songRepository(songRepositoryPort).build().execute();
+        List<Song> songs = GetAllSongsQuery.builder().songRepository(songRepository).build().execute();
         if (songs.isEmpty()) return ResponseEntity.noContent().build();
         List<GetSongResponseDTO> songsResponse = songs.stream().map(songFacadeMapper::fromDomain).toList();
         return ResponseEntity.ok(songsResponse);
@@ -42,7 +42,7 @@ public class SongController {
     public ResponseEntity createSong(@RequestBody PostSongRequestDTO songDto) {
         try {
             String id = CreateSongCommand.builder()
-                    .songRepository(songRepositoryPort)
+                    .songRepository(songRepository)
                     .title(songDto.getTitle())
                     .durationSeconds(songDto.getDurationSeconds())
                     .artistId(songDto.getArtistId())
@@ -59,7 +59,7 @@ public class SongController {
 
     @GetMapping("/{id}")
     public ResponseEntity getSongById(@PathVariable String id) {
-        Optional<Song> song = GetSongByIdQuery.builder().songRepository(songRepositoryPort).id(id).build().execute();
+        Optional<Song> song = GetSongByIdQuery.builder().songRepository(songRepository).id(id).build().execute();
         return song.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(songFacadeMapper.fromDomain(song.get()));
     }
 
@@ -67,7 +67,7 @@ public class SongController {
     public ResponseEntity updateSong(@PathVariable String id, @RequestBody PatchSongRequestDTO songDto) {
         try {
             UpdateSongCommand.builder()
-                    .songRepository(songRepositoryPort)
+                    .songRepository(songRepository)
                     .id(id)
                     .title(songDto.getTitle())
                     .durationSeconds(songDto.getDurationSeconds())
@@ -86,7 +86,7 @@ public class SongController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteSong(@PathVariable String id) {
         try {
-            DeleteSongCommand.builder().songRepository(songRepositoryPort).id(id).build().handle();
+            DeleteSongCommand.builder().songRepository(songRepository).id(id).build().handle();
         } catch (InvalidSongException e) {
             return ResponseEntity.unprocessableEntity().build();
         } catch (SongNotFoundException e) {

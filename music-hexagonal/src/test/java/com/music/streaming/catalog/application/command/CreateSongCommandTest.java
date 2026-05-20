@@ -1,6 +1,6 @@
 package com.music.streaming.catalog.application.command;
 
-import com.music.streaming.catalog.application.port.SongRepositoryPort;
+import com.music.streaming.catalog.application.port.SongRepository;
 import com.music.streaming.catalog.domain.DuplicatedSongException;
 import com.music.streaming.catalog.domain.InvalidSongException;
 import com.music.streaming.catalog.domain.Song;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 class CreateSongCommandTest {
 
     @Mock
-    SongRepositoryPort songRepository;
+    SongRepository songRepository;
 
     @Test
     void handle_shouldReturnIdWhenValid() throws InvalidSongException, DuplicatedSongException {
