@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -23,6 +24,7 @@ public class UserEntity {
     private String username;
     @Column(nullable = false, unique = true)
     private String email;
+    @NonNull
     @Column(nullable = false, unique = true)
     private ArrayList<Song> songs;
 }
