@@ -21,7 +21,7 @@ public class UserFavoritesAdapter implements UserFavoritesPort {
 
     @Override
     public void deleteUserFavorites(User user) {
-        for (Song song : user.getSongs()) {
+        for (Song song : userJpaRepository.findById(user.getId()).get().getSongs()) {
             userJpaRepository.findById(user.getId()).get().getSongs().remove(song);
         }
     }

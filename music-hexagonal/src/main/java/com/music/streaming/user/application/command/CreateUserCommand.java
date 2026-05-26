@@ -23,7 +23,7 @@ public class CreateUserCommand {
     public String handle() throws InvalidUserException, DuplicatedUserException {
         if (!StringUtils.hasText(username) || !StringUtils.hasText(email)) throw new InvalidUserException();
         if (userRepository.getUserByEmail(email).isPresent()) throw new DuplicatedUserException();
-        User user = User.builder().id(UUID.randomUUID().toString()).username(username).email(email).songs(songs).build();
+        User user = User.builder().id(UUID.randomUUID().toString()).username(username).email(email).build();
         userRepository.createUser(user);
         return user.getId();
     }

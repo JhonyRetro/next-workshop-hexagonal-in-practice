@@ -4,19 +4,17 @@ import com.music.streaming.catalog.domain.Song;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import jakarta.persistence.Transient;
+import lombok.*;
 
 import java.util.ArrayList;
 
 @Entity
 @Getter
 @Setter
-@SuperBuilder
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
     @Id
     private String id;
@@ -24,7 +22,7 @@ public class UserEntity {
     private String username;
     @Column(nullable = false, unique = true)
     private String email;
-    @NonNull
-    @Column(nullable = false, unique = true)
-    private ArrayList<Song> songs;
+    @Transient
+    @Builder.Default
+    private ArrayList<Song> songs = new ArrayList<>();
 }

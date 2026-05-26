@@ -30,6 +30,6 @@ public class UpdateUserCommand {
             throw new InvalidUserException();
         }
         if (userRepository.getUserById(id).isEmpty()) throw new UserNotFoundException();
-        userRepository.updateUser(User.builder().id(id).username(username).email(email).songs(songs).build());
+        userRepository.updateUser(User.builder().id(id).username(username).email(email).build());
     }
 }
